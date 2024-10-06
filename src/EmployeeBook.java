@@ -1,8 +1,5 @@
-import java.util.Arrays;
-
 public class EmployeeBook {
     private final Employee[] employees = new Employee[10];
-
     private void validateDepartmentId(int department) {
         if (department < 1 || department > 5) {
             throw new IllegalArgumentException("ID отдела должен быть в диапазоне [1 - 5]");
@@ -11,11 +8,16 @@ public class EmployeeBook {
 
     /**
      * Добавление нового сотрудника
+     * Очень сложно
      *
-     * @param employee
-     * @return
+     * @param name String
+     * @param surname String
+     * @param department int
+     * @param salary int
+     * @return boolean
      */
-    public boolean addEmpoloyee(Employee employee) {
+    public boolean addEmployee(String name, String surname, int department, int salary) {
+        Employee employee = new Employee(name, surname, department, salary);
         boolean result = false;
         for (int i = 0; i < employees.length; i++) {
             if (employees[i] == null) {
@@ -29,9 +31,10 @@ public class EmployeeBook {
     }
 
     /**
-     * Удалеие сотрудика с указанным ID
+     * Удаление сотрудника с указанным ID
+     * Очень сложно
      *
-     * @param id
+     * @param id int
      */
     public void removeEmployeeById(int id) {
         for (int i = 0; i < employees.length; i++) {
@@ -44,15 +47,16 @@ public class EmployeeBook {
 
     /**
      * Поиск сотрудника по указанному ID
+     * Очень сложно
      *
-     * @param id
-     * @return
+     * @param id int
+     * @return Employee
      */
     public Employee findEmployeeById(int id) {
         Employee result = null;
-        for (int i = 0; i < employees.length; i++) {
-            if (employees[i] != null && employees[i].getId() == id) {
-                result = employees[i];
+        for (Employee employee : employees) {
+            if (employee != null && employee.getId() == id) {
+                result = employee;
                 break;
             }
         }
@@ -60,44 +64,27 @@ public class EmployeeBook {
     }
 
     /**
-     * расчет фонда оплаты ЗП
+     * поиск сотрудника с максимальной ЗП по отделу
+     * Повышенная сложность
      *
-     * @param department - ID отдела (0 - по всей организации)
-     * @return
+     * @param department int - ID отдела
+     * @return Employee
      */
-    private int _calculateTotalSalary(int department) {
-        int total = 0;
-        for (Employee employee : employees) {
-            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
-            if (employee == null || !(department == employee.getDepartment() || department == 0)) {
-                continue;
-            }
-            total += employee.getSalary();
-        }
-        return total;
-    }
-
-    /**
-     * поиск сотрудника с максимальной и минимальной ЗП
-     *
-     * @param department - ID отдела (0- по всей организации)
-     * @param max        - true/false - пооиск сотрудника с максимальной/минимальной ЗП
-     * @return
-     */
-    private Employee _findEmployeeWithMaxOrMinSalary(int department, boolean max) {
+    public Employee findEmployeeWithMaxSalary(int department)
+    {
+        validateDepartmentId(department);
         Employee result = null;
         boolean isFirst = true;
         for (Employee employee : employees) {
             // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
-            if (employee == null || !(department == employee.getDepartment() || department == 0)) {
+            if (employee == null || department != employee.getDepartment()) {
                 continue;
             }
 
-            // Устанавливаем значение результата, равным теущему
+            // Устанавливаем значение результата, равным текущему
             if (
-                    isFirst // Это первый непустой элемент, совпадающий по номеру отдела
-                            || max && employee.getSalary() > result.getSalary() // поиск по максимальной зарплате, и зарплата больше, чем у установленного ранее
-                            || !max && employee.getSalary() < result.getSalary() // поиск по минимальной зарплате, и зарплата меньше, чем у установленного ранее
+                 isFirst // Это первый непустой элемент, совпадающий по номеру отдела
+                 || employee.getSalary() > result.getSalary() // зарплата больше, чем у установленного ранее
             ) {
                 result = employee;
                 isFirst = false; // Следующий элемент уже не будет первым
@@ -108,17 +95,141 @@ public class EmployeeBook {
     }
 
     /**
-     * расчет средней ЗП
-     *
-     * @param department - ID отдела (0 - по всей организации)
-     * @return
+     * поиск сотрудника с максимальной ЗП по всей организации
+     * Базовая сложность
+     * @return Employee
      */
-    private int _calculateAverageSalary(int department) {
+    public Employee findEmployeeWithMaxSalary() {
+        Employee result = null;
+        boolean isFirst = true;
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой
+            if (employee == null) {
+                continue;
+            }
+
+            // Устанавливаем значение результата, равным текущему
+            if (
+                    isFirst // Это первый непустой элемент, совпадающий по номеру отдела
+                            || employee.getSalary() > result.getSalary() // зарплата больше, чем у установленного ранее
+            ) {
+                result = employee;
+                isFirst = false; // Следующий элемент уже не будет первым
+            }
+
+        }
+        return result;
+    }
+
+    /**
+     * поиск сотрудника с минимальной ЗП по отделу
+     * Повышенная сложность
+     *
+     * @param department int - ID отдела
+     * @return Employee
+     */
+    public Employee findEmployeeWithMinSalary(int department) {
+        validateDepartmentId(department);
+        Employee result = null;
+        boolean isFirst = true;
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null || department != employee.getDepartment()) {
+                continue;
+            }
+
+            // Устанавливаем значение результата, равным текущему
+            if (
+                isFirst // Это первый непустой элемент, совпадающий по номеру отдела
+                || employee.getSalary() < result.getSalary() // поиск по минимальной зарплате, и зарплата меньше, чем у установленного ранее
+            ) {
+                result = employee;
+                isFirst = false; // Следующий элемент уже не будет первым
+            }
+
+        }
+        return result;
+    }
+
+    /**
+     * поиск сотрудника с минимальной ЗП по всей организации
+     * Базовая сложность
+     * @return Employee
+     */
+    public Employee findEmployeeWithMinSalary() {
+        Employee result = null;
+        boolean isFirst = true;
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null) {
+                continue;
+            }
+
+            // Устанавливаем значение результата, равным текущему
+            if (
+                 isFirst // Это первый непустой элемент, совпадающий по номеру отдела
+                 || employee.getSalary() < result.getSalary() // поиск по минимальной зарплате, и зарплата меньше, чем у установленного ранее
+            ) {
+                result = employee;
+                isFirst = false; // Следующий элемент уже не будет первым
+            }
+
+        }
+        return result;
+
+    }
+
+    /**
+     * расчет фонда ЗП по отделу
+     * Повышенная сложность
+     *
+     * @param department int - ID отдела
+     * @return int
+     */
+    public int calculateTotalSalary(int department) {
+        validateDepartmentId(department);
+        int total = 0;
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null || department != employee.getDepartment()) {
+                continue;
+            }
+            total += employee.getSalary();
+        }
+        return total;
+    }
+
+    /**
+     * расчет фонда ЗП по всей организации
+     * Базовая сложность
+     *  @return int
+     */
+    public int calculateTotalSalary() {
+        int total = 0;
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null) {
+                continue;
+            }
+            total += employee.getSalary();
+        }
+        return total;
+    }
+
+    /**
+     * расчет средней ЗП по отделу
+     * Повышенная сложность
+     *
+     * @param department int
+     * @return int
+     */
+    public int calculateAverageSalary(int department) {
+        validateDepartmentId(department);
         int total = 0;
         int amount = 0;
         for (Employee employee : employees) {
             // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
-            if (employee == null || !(department == employee.getDepartment() || department == 0)) {
+            if (employee == null || department != employee.getDepartment()) {
                 continue;
             }
             total += employee.getSalary();
@@ -133,17 +244,46 @@ public class EmployeeBook {
     }
 
     /**
-     * Индексация ЗП
-     * @param department  - ID отдела (0 - по всей организации)
-     * @percent department  - процент повышения ЗП
+     * расчет средней ЗП по всей организации
+     * Базовая сложность
+     *
+     * @return int
      */
-    private void _salaryIndexation(int department, int percent) {
+    public int calculateAverageSalary() {
+        int total = 0;
+        int amount = 0;
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null) {
+                continue;
+            }
+            total += employee.getSalary();
+            amount++;
+        }
+
+        if (amount == 0) {
+            return 0;
+        }
+
+        return total / amount;
+
+    }
+
+    /**
+     * Индексация ЗП сотрудникам отдела
+     * Повышенная сложность
+     *
+     * @param percent int - процент повышения ЗП
+     * @param department int - ID отдела
+     */
+    public void salaryIndexation(int percent, int department) {
+        validateDepartmentId(department);
         if (percent <= 0) {
             throw new IllegalArgumentException("Процент повышения зарплаты должен быть больше нуля");
         }
         for (Employee employee : employees) {
             // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
-            if (employee == null || !(department == employee.getDepartment() || department == 0)) {
+            if (employee == null || department != employee.getDepartment()) {
                 continue;
             }
             int salary = employee.getSalary();
@@ -153,40 +293,39 @@ public class EmployeeBook {
     }
 
     /**
-     * Отчет по сотрудникам общий
-     * @param department - ID отдела (0 - по всей организации)
-     * @param moreThan - true/false ЗП больше, чем/меньше, чем
-     * @param salary - критерий по ЗП
+     * Индексация ЗП всем сотрудникам организации
+     * Повышенная сложность
+     *
+     * @param percent int- процент повышения ЗП
      */
-    private void _employeesReport(int department, boolean moreThan, int salary) {
-        if (salary < 0 || salary == 0 && !moreThan) {
-            throw new IllegalArgumentException("Зарплата сотрудника должна быть больше нуля");
+    public void salaryIndexation(int percent) {
+//        _salaryIndexation(0, percent);
+        if (percent <= 0) {
+            throw new IllegalArgumentException("Процент повышения зарплаты должен быть больше нуля");
         }
-
-        String header = "Список сотрудников";
-        if (department != 0) {
-            header += " отдела " + department;
-        } else {
-            header += " организации";
-        }
-
-        if (salary > 0) {
-            if (moreThan) {
-                header += " c ЗП от " + salary + " руб.";
-            } else {
-                header += " c ЗП менее " + salary + " руб.";
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null) {
+                continue;
             }
+            int salary = employee.getSalary();
+            salary += salary * percent / 100;
+            employee.setSalary(salary);
         }
+    }
 
+    /**
+     * Отчет по сотрудникам отдела
+     * Повышенная сложность
+     *
+     * @param department int - ID отдела
+     */
+    public void employeesReport(int department) {
+        String header = "Список сотрудников отдела " + department;
         String report = "";
         for (Employee employee : employees) {
             // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
-            if (employee == null || !(department == employee.getDepartment() || department == 0)) {
-                continue;
-            }
-
-            // Пропускаем элемент, если ЗП не соответствует критериям отбора
-            if (moreThan && employee.getSalary() < salary || !moreThan && employee.getSalary() >= salary) {
+            if (employee == null || department != employee.getDepartment()) {
                 continue;
             }
 
@@ -204,142 +343,192 @@ public class EmployeeBook {
     }
 
     /**
-     * поиск сотрудника с максимальной ЗП по отделу
-     * @param department - ID отдела
-     * @return
-     */
-    public Employee findEmployeeWithMaxSalary(int department) {
-        validateDepartmentId(department);
-        return _findEmployeeWithMaxOrMinSalary(department, true);
-    }
-
-    /**
-     * поиск сотрудника с максимальной ЗП по всей организации
-     * @return
-     */
-    public Employee findEmployeeWithMaxSalary() {
-        return _findEmployeeWithMaxOrMinSalary(0, true);
-    }
-
-    /**
-     * поиск сотрудника с минимальной ЗП по отделу
-     * @param department - ID отдела
-     * @return
-     */
-    public Employee findEmployeeWithMinSalary(int department) {
-        validateDepartmentId(department);
-        return _findEmployeeWithMaxOrMinSalary(department, false);
-    }
-
-    /**
-     * поиск сотрудника с минимальной ЗП по всей организации
-     * @return
-     */
-    public Employee findEmployeeWithMinSalary() {
-        return _findEmployeeWithMaxOrMinSalary(0, false);
-    }
-
-    /**
-     * расчет фонда ЗП по отделу
-     * @param department - ID отдела
-     * @return
-     */
-    public int calculateTotalSalary(int department) {
-        validateDepartmentId(department);
-        return _calculateTotalSalary(department);
-    }
-
-    /**
-     * расчет фонда ЗП по всей организации
-     *  @return
-     */
-    public int calculateTotalSalary() {
-        return _calculateTotalSalary(0);
-    }
-
-    /**
-     * расчет средней ЗП по отделу
-     * @param department
-     * @return
-     */
-    public int calculateAverageSalary(int department) {
-        validateDepartmentId(department);
-        return _calculateAverageSalary(department);
-    }
-
-    /**
-     * расчет средней ЗП по всей организации
-     * @return
-     */
-    public int calculateAverageSalary() {
-        return _calculateAverageSalary(0);
-    }
-
-    /**
-     * Индексация ЗП сотрудникам отдела
-     * @param percent - процент повышения ЗП
-     * @param department - ID отдела
-     */
-    public void salaryIndexation(int percent, int department) {
-        validateDepartmentId(department);
-        _salaryIndexation(department, percent);
-    }
-
-    /**
-     * Индексация ЗП всем сотрдуникам организации
-     * @param percent - процент повышения ЗП
-     */
-    public void salaryIndexation(int percent) {
-        _salaryIndexation(0, percent);
-    }
-
-    /**
-     * Отчет по сотрудникам отдела
-     * @param department - ID отдела
-     */
-    public void employeesReport(int department) {
-        _employeesReport(department, true, 0);
-    }
-
-    /**
      * Отчет по сотрудникам организации в целом
+     * Базовая сложность
      */
     public void employeesReport() {
-        _employeesReport(0, true, 0);
+        String header = "Список сотрудников организации";
+        String report = "";
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null) {
+                continue;
+            }
+
+            report += "id = " + employee.getId() + ": " + employee.getSurname() + " " + employee.getName() + ", зарплата: " + employee.getSalary() + "\r\n";
+        }
+
+        if (report.isEmpty()) {
+            report = "Ничего не найдено\r\n";
+        }
+
+        System.out.println(header);
+        System.out.println("----------------------------------");
+        System.out.print(report);
+        System.out.println("----------------------------------");
     }
 
     /**
      * Отчет по сотрудникам отдела c ЗП больше, чем
-     * @param salary - критерий отбора по ЗП
-     * @param department - ID отдела
+     * Повышенная сложность
+     *
+     * @param salary int - критерий отбора по ЗП
+     * @param department int - ID отдела
      */
     public void employeesWithSalaryMoreThanReport(int salary, int department) {
-        _employeesReport(department, true, salary);
+        if (salary < 0 || salary == 0) {
+            throw new IllegalArgumentException("Зарплата сотрудника должна быть больше нуля");
+        }
+
+        String header = "Список сотрудников отдела " + department
+            + " c ЗП от " + salary + " руб.";
+
+        String report = "";
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null || !(department == employee.getDepartment() || department == 0)) {
+                continue;
+            }
+
+            // Пропускаем элемент, если ЗП не соответствует критериям отбора
+            if (employee.getSalary() < salary) {
+                continue;
+            }
+
+            report += "id = " + employee.getId() + ": " + employee.getSurname() + " " + employee.getName() + ", зарплата: " + employee.getSalary() + "\r\n";
+        }
+
+        if (report.isEmpty()) {
+            report = "Ничего не найдено\r\n";
+        }
+
+        System.out.println(header);
+        System.out.println("----------------------------------");
+        System.out.print(report);
+        System.out.println("----------------------------------");
+
     }
 
     /**
-     * Отчет по сотрудникам организации в целом c ЗП больше, чем
-     * @param salary - критерий отбора по ЗП
+     * Отчет по сотрудникам организации в целом с ЗП больше, чем
+     * Повышенная сложность
+     *
+     * @param salary int - критерий отбора по ЗП
      */
     public void employeesWithSalaryMoreThanReport(int salary) {
-        _employeesReport(0, true, salary);
+        if (salary < 0 || salary == 0) {
+            throw new IllegalArgumentException("Зарплата сотрудника должна быть больше нуля");
+        }
+
+        String header = "Список сотрудников  организации "
+            + " c ЗП от " + salary + " руб.";
+
+        String report = "";
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null) {
+                continue;
+            }
+
+            // Пропускаем элемент, если ЗП не соответствует критериям отбора
+            if (employee.getSalary() < salary) {
+                continue;
+            }
+
+            report += "id = " + employee.getId() + ": " + employee.getSurname() + " " + employee.getName() + ", зарплата: " + employee.getSalary() + "\r\n";
+        }
+
+        if (report.isEmpty()) {
+            report = "Ничего не найдено\r\n";
+        }
+
+        System.out.println(header);
+        System.out.println("----------------------------------");
+        System.out.print(report);
+        System.out.println("----------------------------------");
+
     }
 
     /**
      * Отчет по сотрудникам отдела c ЗП меньше, чем
-     * @param salary - критерий отбора по ЗП
-     * @param department - ID отдела
+     * Повышенная сложность
+     *
+     * @param salary int - критерий отбора по ЗП
+     * @param department int - ID отдела
      */
     public void employeesWithSalaryLessThanReport(int salary, int department) {
-        _employeesReport(department, false, salary);
+        if (salary < 0 || salary == 0) {
+            throw new IllegalArgumentException("Зарплата сотрудника должна быть больше нуля");
+        }
+
+        String header = "Список сотрудников отдела " + department
+            + " c ЗП менее " + salary + " руб.";
+
+        String report = "";
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null || !(department == employee.getDepartment() || department == 0)) {
+                continue;
+            }
+
+            // Пропускаем элемент, если ЗП не соответствует критериям отбора
+            if (employee.getSalary() >= salary) {
+                continue;
+            }
+
+            report += "id = " + employee.getId() + ": " + employee.getSurname() + " " + employee.getName() + ", зарплата: " + employee.getSalary() + "\r\n";
+        }
+
+        if (report.isEmpty()) {
+            report = "Ничего не найдено\r\n";
+        }
+
+        System.out.println(header);
+        System.out.println("----------------------------------");
+        System.out.print(report);
+        System.out.println("----------------------------------");
+
     }
 
     /**
-     * Отчет по сотрудникам организации в целом c ЗП меньше, чем
+     * Отчет по сотрудникам организации в целом с ЗП меньше, чем
+     * Повышенная сложность
+     *
      * @param salary - критерий отбора по ЗП
      */
     public void employeesWithSalaryLessThanReport(int salary) {
-        _employeesReport(0, false, salary);
+//        _employeesReport(0, false, salary);
+        if (salary < 0 || salary == 0) {
+            throw new IllegalArgumentException("Зарплата сотрудника должна быть больше нуля");
+        }
+
+        String header = "Список сотрудников организации "
+            + " c ЗП менее " + salary + " руб.";
+
+        String report = "";
+        for (Employee employee : employees) {
+            // Пропускаем элемент, если он пустой, или не совпадает по номеру отделу
+            if (employee == null) {
+                continue;
+            }
+
+            // Пропускаем элемент, если ЗП не соответствует критериям отбора
+            if (employee.getSalary() >= salary) {
+                continue;
+            }
+
+            report += "id = " + employee.getId() + ": " + employee.getSurname() + " " + employee.getName() + ", зарплата: " + employee.getSalary() + "\r\n";
+        }
+
+        if (report.isEmpty()) {
+            report = "Ничего не найдено\r\n";
+        }
+
+        System.out.println(header);
+        System.out.println("----------------------------------");
+        System.out.print(report);
+        System.out.println("----------------------------------");
+
     }
 
     @Override

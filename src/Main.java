@@ -4,16 +4,16 @@ public class Main {
 
         System.out.println("1. Инициализируем книгу сотрудников");
         System.out.println("-----------------------------------");
-        employeeBook.addEmpoloyee(new Employee("АННА МИХАЙЛОВНА", "ЗАРЕЦКАЯ", 1, 78300));
-        employeeBook.addEmpoloyee(new Employee("ОЛЕГ ВЛАДИМИРОВИЧ", "ВИХРОВ", 1, 93600));
-        employeeBook.addEmpoloyee(new Employee("СЕРГЕЙ НИКОЛАЕВИЧ", "ПОЗДНЯКОВ", 2, 95000));
-        employeeBook.addEmpoloyee(new Employee("АЛЕКСАНДР АНДРЕЕВИЧ", "КУЗНЕЦОВ", 2, 110000));
-        employeeBook.addEmpoloyee(new Employee("АЛЕКСАНДР ГРИГОРЬЕВИЧ", "ПУСТЫНЦЕВ", 3, 88000));
-        employeeBook.addEmpoloyee(new Employee("АНАТОЛИЙ АНТОНОВИЧ", "РЫМАЕВ", 3, 98000));
-        employeeBook.addEmpoloyee(new Employee("СВЕТЛАНА ВЛАДИМИРОВНА", "ШУСТОВА", 3, 93000));
-        employeeBook.addEmpoloyee(new Employee("МИХАИЛ ВЛАДИМИРОВИЧ", "МОРОЗОВ", 4, 120000));
-        employeeBook.addEmpoloyee(new Employee("ГЛЕБ ЕВГЕНЬЕВИЧ", "ВОСТРИКОВ", 4, 94000));
-        employeeBook.addEmpoloyee(new Employee("БОРИС ПЕТРОВИЧ", "АЛЕКСАНДРОВ", 5, 150000));
+        employeeBook.addEmployee("АННА МИХАЙЛОВНА", "ЗАРЕЦКАЯ", 1, 78300);
+        employeeBook.addEmployee("ОЛЕГ ВЛАДИМИРОВИЧ", "ВИХРОВ", 1, 93600);
+        employeeBook.addEmployee("СЕРГЕЙ НИКОЛАЕВИЧ", "ПОЗДНЯКОВ", 2, 95000);
+        employeeBook.addEmployee("АЛЕКСАНДР АНДРЕЕВИЧ", "КУЗНЕЦОВ", 2, 110000);
+        employeeBook.addEmployee("АЛЕКСАНДР ГРИГОРЬЕВИЧ", "ПУСТЫНЦЕВ", 3, 88000);
+        employeeBook.addEmployee("АНАТОЛИЙ АНТОНОВИЧ", "РЫМАЕВ", 3, 98000);
+        employeeBook.addEmployee("СВЕТЛАНА ВЛАДИМИРОВНА", "ШУСТОВА", 3, 93000);
+        employeeBook.addEmployee("МИХАИЛ ВЛАДИМИРОВИЧ", "МОРОЗОВ", 4, 120000);
+        employeeBook.addEmployee("ГЛЕБ ЕВГЕНЬЕВИЧ", "ВОСТРИКОВ", 4, 94000);
+        employeeBook.addEmployee("БОРИС ПЕТРОВИЧ", "АЛЕКСАНДРОВ", 5, 150000);
         System.out.println(employeeBook);
         System.out.println();
 
@@ -23,19 +23,23 @@ public class Main {
         System.out.println(employeeBook);
         System.out.println();
 
+        System.out.println("3. Найдем сотрудника с ID = 7");
+        System.out.println("-----------------------------");
+        System.out.println(employeeBook.findEmployeeById(7));
+        System.out.println();
 
-        System.out.println("3. Добавляем нового сотрудника");
+        System.out.println("4. Добавляем нового сотрудника");
         System.out.println("------------------------------");
-        employeeBook.addEmpoloyee(new Employee("ВИКТОР ВАСИЛЬЕВИЧ", "АГЕЕВ", 3, 105000));
+        employeeBook.addEmployee("ВИКТОР ВАСИЛЬЕВИЧ", "АГЕЕВ", 3, 105000);
         System.out.println(employeeBook);
         System.out.println();
 
-        System.out.println("4. Фонд ЗП на месяц по организации");
+        System.out.println("5. Фонд ЗП на месяц по организации");
         System.out.println("----------------------------------");
         System.out.println(employeeBook.calculateTotalSalary() + " руб.");
         System.out.println();
 
-        System.out.println("5. Фонд ЗП на месяц по отделам");
+        System.out.println("6. Фонд ЗП на месяц по отделам");
         System.out.println("------------------------------");
         {
             int total = 0;
@@ -49,12 +53,12 @@ public class Main {
         }
         System.out.println();
 
-        System.out.println("6. Средняя ЗП по организации");
+        System.out.println("7. Средняя ЗП по организации");
         System.out.println("----------------------------");
         System.out.println(employeeBook.calculateAverageSalary() + " руб.");
         System.out.println();
 
-        System.out.println("7. Средняя ЗП по отделам");
+        System.out.println("8. Средняя ЗП по отделам");
         System.out.println("------------------------");
         {
             for (int department = 1; department <= 5; department++) {
@@ -64,14 +68,14 @@ public class Main {
         }
         System.out.println();
 
-        System.out.println("8. Сотрудники с максимальной и минимальной ЗП по организации");
+        System.out.println("9. Сотрудники с максимальной и минимальной ЗП по организации");
         System.out.println("------------------------------------------------------------");
         System.out.println("Сотрудник с максимальной ЗП: " + employeeBook.findEmployeeWithMaxSalary());
         System.out.println("Сотрудник с минимальной ЗП: " + employeeBook.findEmployeeWithMinSalary());
         System.out.println();
 
-        System.out.println("9. Сотрудники с максимальной и минимальной ЗП по отделам");
-        System.out.println("--------------------------------------------------------");
+        System.out.println("10. Сотрудники с максимальной и минимальной ЗП по отделам");
+        System.out.println("---------------------------------------------------------");
         {
             for (int department = 1; department <= 5; department++) {
                 System.out.println("Отдел " + department);
@@ -81,7 +85,7 @@ public class Main {
         }
         System.out.println();
 
-        System.out.println("10. Повышаем ЗП всем сотрудникам организации на 15%");
+        System.out.println("11. Повышаем ЗП всем сотрудникам организации на 15%");
         System.out.println("---------------------------------------------------");
         System.out.println("До повышения");
         employeeBook.employeesReport();
@@ -90,13 +94,13 @@ public class Main {
         employeeBook.employeesReport();
         System.out.println();
 
-        System.out.println("11. Получаем отчеты по сотрудникам организации с ЗП до 100000 и более");
+        System.out.println("12. Получаем отчеты по сотрудникам организации с ЗП до 100000 и более");
         System.out.println("---------------------------------------------------------------------");
         employeeBook.employeesWithSalaryMoreThanReport(100000);
         employeeBook.employeesWithSalaryLessThanReport(100000);
         System.out.println();
 
-        System.out.println("11. Получаем отчеты по сотрудникам отдела 1 с ЗП до 80000 и более");
+        System.out.println("13. Получаем отчеты по сотрудникам отдела 1 с ЗП до 80000 и более");
         System.out.println("-----------------------------------------------------------------");
         employeeBook.employeesWithSalaryMoreThanReport(80000, 1);
         employeeBook.employeesWithSalaryLessThanReport(80000, 1);
